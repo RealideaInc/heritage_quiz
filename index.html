@@ -1,0 +1,161 @@
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>世界遺産検定2級 学習サイト</title>
+    <link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🌏 世界遺産検定2級 マスター 🗾</h1>
+        
+        <div class="score-board">
+            <div>学習進捗</div>
+            <div class="score-display">
+                <span id="studyScore">0</span> / <span id="totalItems">55</span> 完了
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar" style="width: 0%">0%</div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('japan')">日本の世界遺産</button>
+            <button class="tab-button" onclick="switchTab('world')">世界の世界遺産</button>
+            <button class="tab-button" onclick="switchTab('basics')">基礎知識</button>
+            <button class="tab-button" onclick="switchTab('quiz')">クイズモード</button>
+            <button class="tab-button" onclick="switchTab('flashcards')">暗記カード</button>
+            <button class="tab-button" onclick="switchTab('namequiz')">名称暗記クイズ</button>
+        </div>
+
+        <!-- 日本の世界遺産 -->
+        <div id="japan" class="content-area active">
+            <h2>日本の世界遺産（全25件）</h2>
+            
+            <input type="text" class="search-bar" placeholder="遺産名で検索..." onkeyup="searchHeritage('japan', this.value)">
+            
+            <div class="filter-container">
+                <select class="filter-select" onchange="filterByType('japan', this.value)">
+                    <option value="all">すべて</option>
+                    <option value="cultural">文化遺産</option>
+                    <option value="natural">自然遺産</option>
+                </select>
+                <select class="filter-select" onchange="filterByYear('japan', this.value)">
+                    <option value="all">登録年</option>
+                    <option value="1990s">1990年代</option>
+                    <option value="2000s">2000年代</option>
+                    <option value="2010s">2010年代</option>
+                    <option value="2020s">2020年代</option>
+                </select>
+            </div>
+
+            <div class="study-grid" id="japanGrid"></div>
+        </div>
+
+        <!-- 世界の世界遺産 -->
+        <div id="world" class="content-area">
+            <h2>世界の主要世界遺産</h2>
+            
+            <input type="text" class="search-bar" placeholder="遺産名または国名で検索..." onkeyup="searchHeritage('world', this.value)">
+            
+            <div class="filter-container">
+                <select class="filter-select" onchange="filterByRegion('world', this.value)">
+                    <option value="all">全地域</option>
+                    <option value="asia">アジア</option>
+                    <option value="europe">ヨーロッパ</option>
+                    <option value="africa">アフリカ</option>
+                    <option value="americas">南北アメリカ</option>
+                    <option value="oceania">オセアニア</option>
+                </select>
+            </div>
+
+            <div class="study-grid" id="worldGrid"></div>
+        </div>
+
+        <!-- 基礎知識 -->
+        <div id="basics" class="content-area">
+            <h2>世界遺産の基礎知識</h2>
+            <div class="study-grid" id="basicsGrid"></div>
+        </div>
+
+        <!-- クイズモード -->
+        <div id="quiz" class="content-area">
+            <h2>クイズで力試し</h2>
+            
+            <div class="filter-container">
+                <select class="filter-select" id="quizCategory">
+                    <option value="all">全範囲</option>
+                    <option value="japan">日本の世界遺産</option>
+                    <option value="world">世界の世界遺産</option>
+                    <option value="basics">基礎知識</option>
+                </select>
+                <button class="tab-button" onclick="startQuiz()">クイズ開始</button>
+            </div>
+
+            <div class="quiz-container" id="quizContainer" style="display: none;">
+                <div class="quiz-question" id="quizQuestion"></div>
+                <div class="quiz-options" id="quizOptions"></div>
+                <div class="quiz-result" id="quizResult"></div>
+                <button class="tab-button" onclick="nextQuestion()" id="nextButton" style="display: none; margin-top: 20px;">次の問題</button>
+            </div>
+
+            <div class="score-board" style="margin-top: 30px;">
+                <div>クイズスコア</div>
+                <div class="score-display">
+                    <span id="correctAnswers">0</span> / <span id="totalQuestions">0</span> 正解
+                </div>
+            </div>
+        </div>
+
+        <!-- 暗記カード -->
+        <div id="flashcards" class="content-area">
+            <h2>暗記カード</h2>
+            <div class="filter-container">
+                <select class="filter-select" id="flashcardCategory" onchange="loadFlashcards()">
+                    <option value="criteria">登録基準</option>
+                    <option value="years">登録年</option>
+                    <option value="countries">国・地域</option>
+                </select>
+            </div>
+            <div id="flashcardContainer" style="margin-top: 20px;"></div>
+        </div>
+
+        <!-- 名称暗記クイズ -->
+        <div id="namequiz" class="content-area">
+            <h2>名称暗記クイズ</h2>
+            <div class="filter-container">
+                <select class="filter-select" id="nameQuizCategory">
+                    <option value="japan">日本の世界遺産</option>
+                    <option value="world">世界の世界遺産</option>
+                </select>
+                <button class="tab-button" onclick="startNameQuiz()">クイズ開始</button>
+            </div>
+
+            <div class="quiz-container" id="nameQuizContainer" style="display: none;">
+                <div class="quiz-question" id="nameQuizQuestion"></div>
+                <div class="quiz-options" id="nameQuizOptions"></div>
+                <div class="quiz-result" id="nameQuizResult"></div>
+                <button class="tab-button" onclick="nextNameQuestion()" id="nameNextButton" style="display: none; margin-top: 20px;">次の問題</button>
+            </div>
+
+            <div class="score-board" style="margin-top: 30px;">
+                <div>クイズスコア</div>
+                <div class="score-display">
+                    <span id="nameCorrectAnswers">0</span> / <span id="nameTotalQuestions">0</span> 正解
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 詳細モーダル -->
+    <div class="modal" id="detailModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <script src="/assets/data.js"></script>
+    <script src="/assets/main.js"></script>
+</body>
+</html>
